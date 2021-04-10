@@ -12,13 +12,13 @@ public class MatrixIt implements Iterator<Integer> {
 //        int[][] array = new int[][]{{1}, {2, 3, 4, 5,}, {6, 7}, {8, 9, 10, 11, 12,}};
 //        int[][] array = new int[][]{{1}, {}, {}, {2, 3, 4, 5}};
 //        int[][] array = new int[][]{{}, {1}, {}, {}, {}, {2}};
-//        int[][] array = new int[][]{{1, 2, 3}};
+        int[][] array = new int[][]{{1, 2, 3}};
 //        int[][] array = new int[][]{{1}, {2}, {3}};
 //        int[][] array = new int[][]{{11, 12}, {}, {31}, {}, {51}};
 //        int[][] array = new int[][]{{1, 2}, {3}};
 //        int[][] array = new int[][]{{}, {}};
 //        int[][] array = new int[][]{{}, {21}};
-        int[][] array = new int[][]{{}, {}, {31}, {}, {}, {61}};
+//        int[][] array = new int[][]{{}, {}, {31}, {}, {}, {61}};
         MatrixIt i = new MatrixIt(array);
         while (i.hasNext()) {
             System.out.println(i.next());
@@ -31,7 +31,7 @@ public class MatrixIt implements Iterator<Integer> {
 
     @Override
     public boolean hasNext() {
-        while (row < data.length && data[row].length == 0) {
+        while (row < data.length && data[row].length == column) {
             row++;
             column = 0;
         }
@@ -43,12 +43,6 @@ public class MatrixIt implements Iterator<Integer> {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        int next = data[row][column];
-        column++;
-        if (column == data[row].length) {
-            column = 0;
-            row++;
-        }
-        return next;
+        return data[row][column++];
     }
 }
