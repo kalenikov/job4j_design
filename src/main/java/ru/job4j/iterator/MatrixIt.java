@@ -31,6 +31,10 @@ public class MatrixIt implements Iterator<Integer> {
 
     @Override
     public boolean hasNext() {
+        System.out.println("column" + column);
+        // выполнится если оба условия отработали:
+        // 1. строка < колво строк (еще не прошли все строки)
+        // 2. длина строки == номер колонки (дошлит до конца текущей строки)
         while (row < data.length && data[row].length == column) {
             row++;
             column = 0;
