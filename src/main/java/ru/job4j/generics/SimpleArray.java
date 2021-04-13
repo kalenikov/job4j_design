@@ -2,40 +2,35 @@ package ru.job4j.generics;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class SimpleArray<T> implements Iterable<T> {
     private Object[] elementData;
+    private int count;
 
     public SimpleArray(int initialCapacity) {
         elementData = new Object[initialCapacity];
     }
 
     public void add(T model) {
-        // добавляем в первую свободную ячейку
-        // учитываем, что можно сделать set(i, null) и в массиве будут null-элементы
-        for (int i = 0; i < elementData.length; i++) {
-            if (elementData[i] == null) {
-                elementData[i] = model;
-                return;
-            }
-        }
-        // нет пустых мест для добавления
-        throw new ArrayIndexOutOfBoundsException();
+        Objects.checkIndex(count, elementData.length);
+        elementData[count++] = model;
     }
 
     public void set(int index, T model) {
-        Objects.checkIndex(index, elementData.length);
+        Objects.checkIndex(index, count);
         elementData[index] = model;
     }
 
     public void remove(int index) {
-        Objects.checkIndex(index, elementData.length);
-        System.arraycopy(elementData, index + 1, elementData, index, elementData.length - index - 1);
+        Objects.checkIndex(index, count);
+        System.arraycopy(elementData, index + 1, elementData, index, count - index - 1);
+        count--;
     }
 
-    T get(int index) {
-        Objects.checkIndex(index, elementData.length);
+    public T get(int index) {
+        Objects.checkIndex(index, count);
         return (T) elementData[index];
     }
 
@@ -46,7 +41,22 @@ public class SimpleArray<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return (Iterator<T>) Arrays.asList(elementData).iterator();
+        return new Iterator<T>() {
+            private int seek;
+
+            @Override
+            public boolean hasNext() {
+                return seek < count;
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                return (T) elementData[seek++];
+            }
+        };
     }
 
     public static void main(String[] args) {

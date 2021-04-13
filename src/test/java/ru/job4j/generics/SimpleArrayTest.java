@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -18,8 +19,9 @@ public class SimpleArrayTest {
     @Test
     public void whenSetThenGet() {
         SimpleArray<String> array = new SimpleArray<>(5);
-        array.set(3, "1");
-        assertThat(array.get(3), is("1"));
+        array.add("1");
+        array.set(0, "2");
+        assertThat(array.get(0), is("2"));
     }
 
     @Test
@@ -40,10 +42,10 @@ public class SimpleArrayTest {
         array.add(null);
         array.add("3");
         System.out.println(array);
-        assertThat(array.get(1), is("3"));
+        assertNull(array.get(1));
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = IndexOutOfBoundsException.class)
     public void whenOverflow() {
         SimpleArray<String> array = new SimpleArray<>(1);
         array.add("1");
