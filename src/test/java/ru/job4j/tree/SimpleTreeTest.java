@@ -30,4 +30,18 @@ public class SimpleTreeTest {
                 is(false)
         );
     }
+
+    @Test
+    public void whenCheckBinary() {
+        var tree = new SimpleTree<Integer>(1);
+        tree.add(1, 2);
+        tree.add(1, 3);
+        tree.add(2, 6);
+        tree.add(2, 7);
+        tree.add(3, 4);
+        tree.add(3, 5);
+        assertTrue(tree.isBinary());
+        tree.add(2, 8);
+        assertFalse(tree.isBinary());
+    }
 }
