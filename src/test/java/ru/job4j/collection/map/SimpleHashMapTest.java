@@ -43,9 +43,9 @@ public class SimpleHashMapTest {
         sm.insert("key3", 3);
         var it = sm.iterator();
         assertTrue(it.hasNext());
-        assertThat(it.next(), is(1));
-        assertThat(it.next(), is(2));
-        assertThat(it.next(), is(3));
+        assertThat(it.next(), is("key1"));
+        assertThat(it.next(), is("key2"));
+        assertThat(it.next(), is("key3"));
         assertFalse(it.hasNext());
     }
 

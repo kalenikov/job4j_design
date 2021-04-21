@@ -5,7 +5,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class SimpleHashMap<K, V> implements Iterable<V> {
+public class SimpleHashMap<K, V> implements Iterable<K> {
     private static int DEFAULT_CAPACITY = 16;
     private static float DEFAULT_LOAD_FACTOR = 0.75f;
     private Node<K, V>[] table;
@@ -100,22 +100,32 @@ public class SimpleHashMap<K, V> implements Iterable<V> {
     public V get(K key) {
         int hash = hash(key);
         Node<K, V> node = table[hash & (table.length - 1)];
-        return node == null ? null : node.value;
+        if (node != null
+                && node.hash == hash
+                && node.key.equals(key)) {
+            return node.value;
+        }
+        return null;
     }
 
     public boolean delete(K key) {
         int hash = hash(key);
         Node<K, V> node = table[hash & (table.length - 1)];
-        table[hash & (table.length - 1)] = null;
-        size--;
-        modCount++;
-        return node != null;
+        if (node != null
+                && node.hash == hash
+                && node.key.equals(key)) {
+            table[hash & (table.length - 1)] = null;
+            size--;
+            modCount++;
+            return true;
+        }
+        return false;
     }
 
 
     @Override
-    public Iterator<V> iterator() {
-        return new Iterator<V>() {
+    public Iterator<K> iterator() {
+        return new Iterator<K>() {
             private int seek = 0;
             int expectedModCount = modCount;
 
@@ -129,14 +139,14 @@ public class SimpleHashMap<K, V> implements Iterable<V> {
             }
 
             @Override
-            public V next() {
+            public K next() {
                 if (modCount != expectedModCount) {
                     throw new ConcurrentModificationException();
                 }
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                return table[seek++].value;
+                return table[seek++].key;
             }
         };
     }
