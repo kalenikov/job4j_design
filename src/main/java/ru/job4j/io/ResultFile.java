@@ -1,6 +1,8 @@
 package ru.job4j.io;
 
+import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
 
 public class ResultFile {
     public static void main(String[] args) {
@@ -10,8 +12,10 @@ public class ResultFile {
                 sb.append(String.format("%d x %d = %d%n", i, j, i * j));
             }
         }
-        try (FileOutputStream out = new FileOutputStream("result.txt")) {
-            out.write(sb.toString().getBytes());
+        try (PrintWriter out = new PrintWriter(
+                new BufferedOutputStream(
+                        new FileOutputStream("result.txt")))) {
+            out.write(sb.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
