@@ -25,7 +25,7 @@ public class LogFilter {
         try (PrintWriter out = new PrintWriter(
                 new BufferedOutputStream(
                         new FileOutputStream(file)))) {
-            out.write(log.toString());
+            log.forEach(out::println);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
