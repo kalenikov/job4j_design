@@ -1,6 +1,9 @@
 package ru.job4j.collection.list;
 
-import java.util.*;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class SimpleLinkedList<E> implements List<E> {
     private Node<E> first;
@@ -8,17 +11,16 @@ public class SimpleLinkedList<E> implements List<E> {
     private int size;
     private int modCount;
 
-    private static class Node<E> {
-        E item;
-        Node<E> next;
-        Node<E> prev;
-
-        public Node(Node<E> prev, E item, Node<E> next) {
-            this.prev = prev;
-            this.item = item;
-            this.next = next;
+    public static void main(String[] args) {
+        var ll = new SimpleLinkedList<String>();
+        ll.add("1");
+        ll.add("2");
+        ll.add("3");
+        ll.add("4");
+        var it = ll.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
         }
-
     }
 
     @Override
@@ -73,14 +75,15 @@ public class SimpleLinkedList<E> implements List<E> {
         };
     }
 
-    public static void main(String[] args) {
-        var ll = new SimpleLinkedList<String>();
-        ll.add("1");
-        ll.add("2");
-        ll.add("3");
-        ll.add("4");
-        var it = ll.iterator();
-        while (it.hasNext())
-            System.out.println(it.next());
+    private static class Node<E> {
+        E item;
+        Node<E> next;
+        Node<E> prev;
+
+        public Node(Node<E> prev, E item, Node<E> next) {
+            this.prev = prev;
+            this.item = item;
+            this.next = next;
+        }
     }
 }
