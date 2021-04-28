@@ -11,14 +11,18 @@ import java.util.*;
 public class DuplicatesVisitor extends SimpleFileVisitor<Path> {
     Map<FileProperty, List<Path>> files = new HashMap<>();
     private Path startPath;
-    private List<String> nonUniqueFiles;
+    private String fileExtension;
 
-    public DuplicatesVisitor(String startDir) {
+    public DuplicatesVisitor(String startDir, String fileExtension) {
         this.startPath = Path.of(startDir);
+        this.fileExtension = fileExtension;
     }
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        if (!file.getFileName().toString().endsWith(fileExtension)) {
+            return super.visitFile(file, attrs);
+        }
         var fileProperty = new FileProperty(attrs.size(), file.getFileName().toString());
         if (null == files.computeIfPresent(fileProperty, (k, v) -> {
             v.add(file.toAbsolutePath());
