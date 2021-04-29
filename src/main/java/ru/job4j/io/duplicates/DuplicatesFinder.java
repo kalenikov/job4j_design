@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class DuplicatesFinder {
     public static void main(String[] args) throws IOException {
-        if (args.length == 0) {
+        if (args.length != 2) {
             throw new IllegalArgumentException("Root folder is null or file extension is null. Usage java -jar dir.jar ROOT_FOLDER FILE_EXT");
         }
         File file = new File(args[0]);
