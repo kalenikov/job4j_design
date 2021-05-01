@@ -1,0 +1,13 @@
+GET http://localhost:9000/?msg=what
+Accept: application/json
+
+###
+GET http://localhost:9000/?msg=exit
+Accept: application/json
+
+###
+# curl -i http://localhost:9000/?msg=Hello
+GET http://localhost:9000/?msg=Hello
+
+###
+
