@@ -1,7 +1,11 @@
 package ru.job4j.io.console_chat;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -13,6 +17,7 @@ public class ConsoleChat {
     private static final String CONTINUE = "продолжить";
     private final String path;
     private final String botAnswersPath;
+    private List<String> log = new ArrayList<>();
 
     public ConsoleChat(String path, String botAnswersPath) {
         this.path = path;
@@ -21,43 +26,41 @@ public class ConsoleChat {
 
     public static void main(String[] args) {
         ConsoleChat cc = new ConsoleChat(
-                "C:\\temp\\java\\job4j_design\\src\\main\\resources\\log.txt",
-                "C:\\temp\\java\\job4j_design\\src\\main\\resources\\ans.txt");
-        try {
-            cc.run();
-        } catch (IOException exception) {
-            exception.printStackTrace();
+                "src/main/resources/log.txt",
+                "src/main/resources/ans.txt");
+        cc.run();
+    }
+
+    private void run() {
+        try (Scanner sc = new Scanner(System.in);
+             BufferedReader in = new BufferedReader(new FileReader(botAnswersPath));
+             PrintWriter out = new PrintWriter(new FileWriter(path, Charset.forName("WINDOWS-1251")))) {
+            List<String> answerList = in.lines().collect(Collectors.toList());
+            String nextInput = nextInput(sc);
+            boolean silentMode = false;
+            while (!nextInput.equals(OUT)) {
+                if (nextInput.equals(STOP)) {
+                    silentMode = true;
+                } else if (nextInput.equals(CONTINUE)) {
+                    silentMode = false;
+                }
+                if (!silentMode) {
+                    String nextOutput = answerList.get(new Random().nextInt(answerList.size()));
+                    System.out.println(nextOutput);
+                    log.add(nextOutput);
+                }
+                nextInput = sc.nextLine();
+                log.add(nextInput);
+            }
+            log.forEach(out::println);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-
-    private void run() throws IOException {
-        Scanner sc = new Scanner(System.in);
-        BufferedReader in = new BufferedReader(new FileReader(botAnswersPath));
-        BufferedWriter out = new BufferedWriter(new FileWriter(path, Charset.forName("WINDOWS-1251")));
-        List<String> answerList = in.lines().collect(Collectors.toList());
-        boolean run = true;
-        boolean silentMode = false;
-        while (run) {
-            String nextInput = sc.nextLine();
-            out.write(nextInput);
-            if (!silentMode) {
-                String nextOutput = answerList.get(new Random().nextInt(answerList.size()));
-                System.out.println(nextOutput);
-                out.newLine();
-                out.write(nextOutput);
-            }
-            if (nextInput.equals(STOP)) {
-                run = false;
-            } else if (nextInput.equals(OUT)) {
-                silentMode = true;
-            } else if (nextInput.equals(CONTINUE)) {
-                silentMode = false;
-            }
-            out.newLine();
-        }
-        sc.close();
-        in.close();
-        out.close();
+    private String nextInput(Scanner sc) {
+        String nextInput = sc.nextLine();
+        log.add(nextInput);
+        return nextInput;
     }
 }
