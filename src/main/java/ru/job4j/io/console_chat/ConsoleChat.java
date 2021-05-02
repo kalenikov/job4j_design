@@ -1,9 +1,6 @@
 package ru.job4j.io.console_chat;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +30,7 @@ public class ConsoleChat {
 
     private void run() {
         try (Scanner sc = new Scanner(System.in);
-             BufferedReader in = new BufferedReader(new FileReader(botAnswersPath));
-             PrintWriter out = new PrintWriter(new FileWriter(path, Charset.forName("WINDOWS-1251")))) {
+             BufferedReader in = new BufferedReader(new FileReader(botAnswersPath))) {
             List<String> answerList = in.lines().collect(Collectors.toList());
             String nextInput = nextInput(sc);
             boolean silentMode = false;
@@ -52,8 +48,16 @@ public class ConsoleChat {
                 nextInput = sc.nextLine();
                 log.add(nextInput);
             }
-            log.forEach(out::println);
+            save(log);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void save(List<String> text) {
+        try (PrintWriter out = new PrintWriter(new FileWriter(path, Charset.forName("WINDOWS-1251")))) {
+            text.forEach(out::println);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
