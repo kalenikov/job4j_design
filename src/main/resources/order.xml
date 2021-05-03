@@ -1,0 +1,11 @@
+<?xml version="1.1" encoding="UTF-8" ?>
+<order customerID="10" comment="ТЕСТОВЫЙ" isInnerOrder="true">
+    <orderLines>
+        <orderLine productCode="PN1" productCount="5"/>
+        <orderLine productCode="PN2" productCount="15"/>
+    </orderLines>
+    <partyIds>
+        <partyId>ПАРТИЯ1</partyId>
+        <partyId>ПАРТИЯ50</partyId>
+    </partyIds>
+</order>
