@@ -28,6 +28,10 @@ public class Person {
     public Person() {
     }
 
+    public boolean isSex() {
+        return sex;
+    }
+
     public Person(boolean sex, int age, Contact contact, String... statuses) {
         this.sex = sex;
         this.age = age;
@@ -72,4 +76,8 @@ public class Person {
                 + '}';
     }
 
+
+    public int getAge() {
+        return age;
+    }
 }
