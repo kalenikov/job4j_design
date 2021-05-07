@@ -20,19 +20,21 @@ public class EchoServer {
                 Socket socket = server.accept();
                 try (OutputStream out = socket.getOutputStream();
                      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-                    String input = in.readLine();
-                    out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
-                    String response;
-                    if (input.toLowerCase().contains(HELLO)) {
-                        response = "Hello, dear friend";
-                    } else if (input.toLowerCase().contains(END)) {
-                        response = END;
-                    } else {
-                        response = input.toLowerCase().split("=")[1].split("\\s")[0];
-                    }
-                    out.write(response.getBytes());
-                    if (response.equals(END)) {
-                        server.close();
+                    String input;
+                    while (!(input = in.readLine()).isEmpty()) {
+                        String response;
+                        if (input.toLowerCase().contains(HELLO)) {
+                            response = "Hello, dear friend";
+                        } else if (input.toLowerCase().contains(END)) {
+                            response = END;
+                        } else {
+                            response = input.toLowerCase().split("=")[1].split("\\s")[0];
+                        }
+                        out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
+                        out.write(response.getBytes());
+                        if (response.equals(END)) {
+                            server.close();
+                        }
                     }
                 }
             }
