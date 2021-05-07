@@ -4,6 +4,9 @@ public class OrderLine {
     private String productCode;
     private int productCount;
 
+    public OrderLine() {
+    }
+
     public OrderLine(String productCode, int productCount) {
         this.productCode = productCode;
         this.productCount = productCount;
