@@ -21,6 +21,26 @@ public class Order {
         this.isInnerOrder = isInnerOrder;
     }
 
+    public int getCustomerID() {
+        return customerID;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public List<OrderLine> getOrderLines() {
+        return orderLines;
+    }
+
+    public String[] getPartyIds() {
+        return partyIds;
+    }
+
+    public boolean isInnerOrder() {
+        return isInnerOrder;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
