@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class LastCommit {
     private final String owner = "kalenikov";
     private final String repo = "job4j_design";
-    private final int limit = 3;
+    private final int limit = 5;
     private final String urlString = String.format("https://api.github.com/repos/%s/%s/commits?per_page=%d",
             owner,
             repo,
