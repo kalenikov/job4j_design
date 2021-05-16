@@ -36,5 +36,5 @@ select p.name,
 from devices_people as dev
          inner join people p on p.id = dev.people_id
          inner join devices d on d.id = dev.device_id
-    and d.price > 5000
-group by p.name;
+group by p.name
+having avg(d.price) > 5000
