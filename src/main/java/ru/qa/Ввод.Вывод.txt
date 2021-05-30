@@ -1,0 +1,630 @@
+
+c:\temp\io-fileiomethods.gif
+c:\temp\io_diagram.gif
+
+1. Что такое поток ввода-вывода?
+    ПВВ - это абстрация которая описывает потребителя или поставщика информация.
+    ППВ связан с некоторым источником или приемником данных, способным получать или предоставлять информацию.
+    ПВВ связан с физ устройством через систему ВВ в джава.
+    Все ПВВ ведутся себя одинаково несмотря на разную природу конкретных физ.устройств (примеры: файл, консоль, сеть).
+    Потоки представляют единый способ организации ВВ, без необходимости вникать в отличия физ сущностей.
+
+
+2. Что такое Java IO?
+   
+    Cистема ввода/вывода -- это часть платформы, которая отвечает работу ПВВ. В Java она представлена пакетом java.io.
+    IO API – это Java API, которые облегчают работу с ПВВ.
+
+    В java.io существуют так называемые потоки ввода и вывода (InputStream and OutputStream).
+    потоки ВВ реализуются в пределах иерархии классов java.io
+
+    В основном java.io предназначен для чтения и записи данных в ресурс:
+        файл;
+        сетевой ресурс
+        System.err, System.in, System.out;
+        при работе с буфером.
+
+    Потоковая система ввода-вывода, входящая в пакет java.io, является составной частью Java, предоставляет готовые классы для работы с:
+        потоками байтов
+        потоками символов
+        буферизированными потоками
+        потоками ввода-вывода командной строки
+        сериализацией объектов (их сохранение и восставнование)
+        файлами (класс File)
+
+
+Классы Java IO API
+    Базовые
+        Object
+            InputStream / OutputStream -- абстрактный класс, определяющий потоковый байтовый ввод/вывод
+            Reader / Writer -- абстрактный класс, определяющий символьный ввод/вывод
+            File
+
+            Наследники
+                InputStreamReader / OutputStreamWriter -- ПВВ, транслирующий байты в символы
+                    InputStreamReader -- bridge from byte streams to character streams
+                    OutputStreamWriter --  bridge from character streams to byte streams
+
+                Массивы
+                    ByteArrayInputStream / ByteArrayOutputStream -- для ВВ в байтовоый массив
+                    CharArrayReader / CharArrayWriter - для ВВ в символьный массив
+
+                Files
+                    FileInputStream / FileOutputStream - Чтение/Отправка данных в файл на диске.
+                    RandomAccessFile / RandomAccessFile - Чтение/запись файлов с произвольным доступом. 
+                    FileReader / FileWriter -- Чтение/Отправка данных в файл на диске.
+
+                Буферизация
+                    BufferedInputStream / BufferedOutputStream - буферизируемый поток. 
+                    BufferedReader / BufferedWriter
+
+
+3. Что такое Java NIO?
+
+    (что первоначально означало NewI/O, т.е. новый ввод-вывод).
+
+    IO -  Потокоориентированный - Блокирующий (синхронный) ввод/вывод
+    NIO Буфер-ориентированный   Неблокирующий (асинхронный) ввод/вывод
+
+    Включена с версии 1.4. 
+    В этой системе поддерживается канальный подход к операциям ВВ, ориентированный на применение буферов.
+    NIO2 -- в JDK 7 система NIO была существенно расширена, и теперь она оказывает улучшенную поддержку стредств обработки файлов и файловых систем.
+
+    Проблемы старой системы:
+    - кидали недетеальные ошибки
+    - переименование плохо работало на разных ОС
+    - нет поддержки симв ссылок
+    - нет части методов для извлечения метаданных
+    - извлечение МД неэффективно
+    - некоторые методы тормозят на больших объемах
+
+    Основные понятия NIO
+        буферы -- В буфере хранятся данные
+        каналы -- канал предоставляет открытое соединение с с устройством ввода вывода. 
+        селекторы -- позволяют одному потоку выполнения мониторить несколько каналов ВВ.
+
+    Для применение системы ввода-вывода NIO требуется получить канал для устройства ввода-вывода и буфер для хранения данных. После этого можно обращаться с буфером.
+    Данные читаются из канала в буфер или пишутся из буфера в канал.
+
+    Потоки ввода/вывода (streams) в Java IO являются блокирующими. 
+    Это значит, что когда в потоке выполнения вызывается ВВ, будет блокировка до тех пор, пока данные не будут считаны или записаны. 
+    
+    Неблокирующий режим Java NIO позволяет запрашивать считанные данные из канала и получать только то, что доступно на данный момент, или вообще ничего, если доступных данных пока нет. 
+    Вместо того, чтобы оставаться заблокированным пока данные не станут доступными для считывания, поток выполнения может заняться чем-то другим.
+
+
+    + java.nio.Path
+    + java.nio.Files
+
+  
+4. Что такое Scanner? 
+
+    Scanner -- класс в java.util для чтения данных примитивных типов и строк, поступающих из источника, который реализует I Readable (констркуторы -- File, InputStream, Path, Readable, String)
+    Scanner может анализировать примитивные типы и строки с помощью регулярных выражений.
+
+    FileReader fin = new FileReader("Test.txt");
+    Scanner src = new Scanner(fin);
+
+    Scanner conin = new Scanner(System.in); 
+
+    String instr = "10 99.88 сканировать очень просто.";
+    Scanner conin = new Scanner(instr);
+
+
+5. Как работает Scanner внутри?
+    Класс явл дополнением класса Formatter, читает отформатированные данные и преобр.их в двоичную форму
+
+    Scanner читает лексемы из источника данных.
+    Лексема - порция данных, ограниченная разделителями (по умолчанию пробелы)
+    Лексема определяются по совпадению с рег.выражением (можно указать, но есть много преодопределенных)
+    Для применения класса нужно придерживаться такой процедуры
+        1. Определить, доступен ли тип вводимых данных? Scanner.hasNextX()
+        2. Если да, то Scanner.nextX()
+        3. повторить
+        4. сlose()
+
+6. Какие базовые методы существуют в Scanner?
+    hasNext(), 
+    next(), 
+    (также аналогичные методы для примитивных типов (boolean, byte, short, int, long, float, double))
+    Также delimiter(), 
+    useDelimeter(String/Pattern), 
+    radix(), 
+    useRadix(). 
+    findInLine(String/Pattern) - пытается найти соответствие указанному шаблону регулярного варажения до перевода строки игнорируя разделители, 
+    Stream tokens() - возращает стрим токенов.
+
+7. Что такое байтовый поток? Как он реализован внутри?
+    БП представляет собой последовательность байтов произвольной длины. 
+    БП представляет средства для управления вводом и выводом отдельных байтов (н-р для чтения\записи двоичных данных)
+
+    Потоки БП определеных в 2х ирерахиях классов
+        InputStream abs 
+        OutputStream abs
+    Абстрактные методы: 
+        read(), 
+        write()
+    У каждого их них есть подклассы, учитывающие особенности разных устройств
+
+        Buffered* буферизованный
+        ByteArray* работа с массивом
+        File* 
+        Data* данных стандартных типов (?)
+        Object* объекты
+        Piped* каналы
+        PushbackIS
+        SequenceIS
+
+    Последовательные вызовы метода read() без параметров, будут возвращать int значения байтов от первого до последнего доступного байта в потоке.
+    есть метод read(buf[])
+
+    Если БП реализован на Java, например ByteArrayInputStream, который основан на массиве, то метод read() возвращает очередной байт в массиве и увеличивает индекс.
+    Если БП привязан к устройству, например FileInputStream, то будут будут использоваться нативные методы JVM для ОС
+
+Что такое юникод 
+    стандарт кодирования символов, включающий в себя знаки почти всех письменных языков мира.
+
+
+8. Что такое символьный поток? Как он реализован внутри?
+    СП представляет средства для управления вводом и выводом отдельных символов в юникоде.
+    СП порой эффективнее БП.
+    Появились в джава 1.1
+    На низком уровнее ВВ по прежнему работает через БП
+    Состоит из массива типа char[], по которому можно перемещаться с помощью специальных методов и маркера.
+
+    СП определеных в 2х ирерахиях классов
+        Reader abs 
+        Writer abs
+
+        Buffered* буферизованный поток ВВ символов
+        CharArray* 
+        File* (обертка над File*Stream)
+        InputStream* преобразующий байты\символы
+        PrintWriter (print + println)
+        PushbacReader
+        String*
+
+9. Что такое буферизированный поток? 
+    Для оптимизации операций ввода-вывода используются буферизуемые потоки. 
+    Они буфер в памяти, с помощью которого повышается производительность при чтении\записи потоков.
+    
+    BufferedInputStream -- считывает данные не по одному байту, а блоками и временно хранит их в специальном буфере. Это позволяет нам оптимизировать работу программы за счет того, что мы уменьшаем количество обращений к файлу.
+    BufferedOutputStream -- создает буфер для потоков вывода. 
+    
+    BufferedReader -- читает текст из потока ввода символов, буферизуя прочитанные символы, чтобы обеспечить эффективное считывание. Можно указать в конструкторе вторым параметром размер буфера.
+    BufferedWriter -- записывает текст в поток вывода символов, буферизуя записанные символы, чтобы обеспечить эффективную запись данных.
+
+    В общем случае выгода заключается в том, что при каждом чтении/записи Вы не трогаете сам непосредственный источник данных, чтение/запись на который происходит медленнее, чем чтение/запись из буфера.
+
+    close -- закрыть поток
+    mark -- отметить позицию в потоке
+    int read -- прочитать буфер
+    String readLine() -- следующая строка
+    boolean ready() -- может ли поток читать
+    reset() -- сбросить поток
+    skip(long n) -- пропустить символы
+
+
+10. Что такое форматированный вывод? Какие механизмы позволяют осуществить форматированный вызов?
+
+    Форматированный вывод - это символьный вывод с помощью задания определенного шаблона форматирования, который определяет 
+        выравнивание, 
+        ширину вывода, 
+        особенности форматирования чисел, дат или денежных единиц 
+    с учетом региональных настроек
+
+    В основе системы ФВ лежит класс Formatter (являющийся интерпретатором шаблонов форматирования), он выполняет преобразование формата и позволяет выводить данные в нужном виде.
+    Formatter занимается тем, что парсит шаблон форматирования используя регулярные выражения и получает список объектов - спецификаторов формата, каждый из которых затем используется для форматирования аргумента. 
+
+    (внутри используется StringBuffer)
+        Formatter format(String форматирующая_строка -- состоит из простых символов и спецификаторов формата,
+            Object ... аргументы)
+
+        Спецификатор формата: знак процента + спецификатор преобразования
+        Число между % и спец.формата -- спецификатор ширины поля
+        .2 - спецификатор точности
+        Признаки формата: 
+            - выравнивание по левому краю
+            0 допол нулями
+              допол пробелами
+            + вывод для полож чисел
+            , груп разделители
+            ( отриц скобки
+        индекс формата: %3$
+        относительный индекс: < (повторно исползовать аргумент)
+
+        Formatter fmt = new Formatter();
+        fmt.fоrmаt("Форматировать %s очень просто: %d %f",
+            "средствами Java", 10, 98.6);
+
+        вывести только часы и минуты
+        fmt = new Formatter();
+        fmt.format("%tl:%tM", cal, cal);
+        System.out.println(fmt);
+
+        Формат с двумя цифрами после десятичной точки
+        11 в поле из 16 символов
+        fmt = new Formatter();
+        fmt. format ( "%16. 2е", 123 .1234567);
+        System.out.println(fmt);
+        fmt.close();
+
+
+        %a Шестнадцатеричное число с плавающей точкой
+        %b  Булево значение
+        %c  Символ
+        %d  Десятичное целое
+        %e  Число в научной записи
+        %f  Десятичное число с плавающей точкой
+        %h  Хеш-код от аргумента
+        %o  Восьмеричное целое
+        %n  Символ переноса строки
+        %t  Время
+        %x  Шестнадцатеричное целое
+        %n  перевод строки
+        %%  знак процента
+
+
+    В классах PrintStream и PrintWriter для форматирования используются методы format(), printf() 
+    Также в классе String есть статический метод format. 
+    метод printf() из PrintStream | PrintWriter автоматически использует Formatter    
+
+    Класс PrintStream - класс, который используется для вывода на консоль. 
+        Когда мы выводим на консоль некоторую информацию с помощью вызова System.out.println(), то тем самым мы задействует PrintStream.
+        Мы можем использовать данный класс для записи информации в поток вывода (вместо OutputStream можно использовать объект File или строковый путь)
+
+        Для вывода информации в выходной поток PrintStream использует следующие методы: println\f\()
+
+    PrintWriter
+        На PrintStream похож другой класс PrintWriter. Его можно использовать как для вывода информации на консоль, так и в файл или любой другой поток вывода.
+        Эти классы имеют метод printf, с помощью которого можно записать отформатированную строку, используя другие объекты в ней.
+
+    PrintStream vs PrintWriter
+    PrintStream -- prints to OutputStream, PrintWriter prints to Write
+    OutputStream is a stream of bytes, a Writer is a stream of characters.
+    С PrintStream вы придерживаетесь стандартного кодирования платформы.
+    С PrintWriter вы можете передать OutputStreamWriter с определенным кодированием.
+
+
+11. Как осуществляется ввод \ вывод из командной строки?
+
+    1. Через стандартные стримы (платформенные функции чтения ввода с клавиатуры и вывода на экран)
+        Java поддерживает 3 стандартных стрима. Класс System содержит три переменных предопределенных потоков:
+        -- System.in (стандартный ввод, чрез System.in работать не удобно, поэтому применяют класс Scanner (а он обращается к System.in) 
+        -- System.out (вывод)
+        -- System.err (вывод ошибки)
+
+    2. Через класс Console
+
+
+12. Что такое класс Console? Расскажите его АПИ.
+    Вспомогательный класс для работы с консолью, кот. представляет методы для доступа к консоли, связанной с виртуальной машиной.
+    Console не формирует ВВ сам по себе, а использует системные потоки System.in, System.out
+
+    Нет конструктора (приватный), можно получить можно через System.console() если консоль недоступна, возвращается NULL
+    
+    writer() получить PrintWriter, связанный с консолью
+    reader() получить Reader
+    readLine() приглашение + читает строку текста
+    flush() сбрасывает консоль и записывает буферный вывод
+    format() \ printf(): выводит на консоль строку с использованием форматирования
+    char[] readPassword(): считывает с консоли введенную пользователем строку
+
+13. Что такое поток данных? Data stream.
+    Поток с данными примитивного типа или строки.
+
+    Классы DataOutputStream и DataInputStream позволяют записывать и считывать данные примитивных типов (boolean, char, byte, short, int, long, float, and double) и строки в utf-8 
+    Все потоки данных реализуют либо I DataInput, либо I DataOutput 
+        readX()
+        writeX()
+        DataOutputStream.writeDouble
+        DataInputStream.readDouble
+
+14. Что такое поток объектов, Object stream
+    Байтовый поток способный r\w объекты. 
+    Большинство стандартных классов поддерживают сериализацию своих объектов, но не все. Те, которые реализуют интерфейс маркера Serializable.
+    Содержит похожие методы как в DataStream, а также
+        readObject()
+        writeObject()
+
+    Сериализация -- сохранение состояния объекта в двоичный вид; 
+    десериализация -- восстановления объекта из двоичного вида
+    Java Serialization API предоставляет стандартный механизм для создания сериализуемых объектов.
+
+    При сериализации используют переменную SerialVersionUID. Во время сериализации Java создает номер версии для класса, так что она может десереализировать его позже. Если во время десериализации, SerialVersionUID не совпадает, то будет ошибка.
+
+    Когда мы не объявляем SerialVersionUID в нашем классе, среда выполнения Java делает это за нас.
+    Рекомендуется объявлять SerialVersionUID как private static final long переменную во избежание механизма по умолчанию.
+    serialver
+
+15. Что такое Path? Как он реализуется на разных ОС?
+    Path (Java 7, интерфейс из пакета nio) -- представление пути в операционной системе.
+    Содержит имя файла и путь к нему, и предназначит для получения сведений и манипуляций с путями.
+
+
+    I Path <-- WindowsPath (with private inner WindowsFileSystem, ZipPath
+    I Path <--UnixPath
+
+    Path p1 = Paths.get("/tmp/foo");
+    Path p4 = FileSystems.getDefault().getPath("/users/sally");
+
+    toString()
+    getFileName()
+    getName(index)()
+    getNameCount()
+    subpath()
+    getParent()
+    getRoot()
+    normalize()
+    toUri()
+    toAbsolutePath ()
+    toRealPath ()
+    resolve (Joining Two Paths)()
+    relativize (Creating a Path Between Two Paths)
+
+
+File Operations
+    Files class -- один из основных в java.nio.file. Содержит методы reading, writing, and manipulating files and directories. 
+    Files работает с экземплярами Path objects
+
+16. Как получить список файлов?
+    io:
+      File.list() или File.listFiles()
+    nio:  
+      Files.list() -- -> Stream<Path>
+      Files.walk() -- видит подкаталоги > Stream<Path>
+      Files.walkFileTree() --> Stream<Path>
+      Files.newDirectoryStream(dir)::DirectoryStream<Path>
+
+    FileVisitor I
+        preVisitDirectory       --> FileVisitResult (CONTINUE, TERMINATE, SKIP_SUBTREE, SKIP_SIBLINGS)
+        visitFile               --> FileVisitResult
+        visitFileFailed         --> FileVisitResult
+        postVisitDirectory      --> FileVisitResult
+
+    SimpleFileVisitor<T> implements FileVisitor
+
+17. Как проверить что файловая сущность является файлом или папкой?
+    io:
+      File.isDirectory() (fs.hasBooleanAttributes(this, FileSystem.BA_DIRECTORY);)
+    nio:
+      Files.isDirectory() --- readAttributes(path, BasicFileAttributes.class, options).isDirectory();
+
+18. Как удалить файл?
+    io:
+      File.delete() \ deleteOnExit
+    nio:  
+      Files.delete() \ deleteIfExists
+
+19. Как переместить файл?
+    io: нет методов, но можно так -- 
+      File.renameTo() или сopy to new file and delete the original file.
+    nio:
+      Files.move()
+      move(Path source, Path target, I CopyOption... options)
+
+20. Как управлять аттрибутами файла?
+    io:
+      методы класса File позволяют читать/изменять (get/set) атрибуты файлов.
+    nio:
+      методы класса Files позволяют читать/изменять (get/set) атрибуты файлов.
+      Интерфейс BasicFileAttributes
+      Files.readAttributes()
+      Files.getFileAttributeView()
+      Files.getAttribute()
+      Files.setAttribute()
+
+21. Как создать файл? 
+
+    Все зависит от формата сущности, который будет сохранятся файл. Каждый тип потока подбирается по необходимости выполнения задачи.
+
+    File file = new File(absoluteFilePath); 
+    file.createNewFile();
+
+    FileOutputStream fos = new FileOutputStream("name.txt"); 
+    fos.write(fileData.getBytes()); 
+    fos.flush(); 
+    fos.close();
+
+    String fileData = "data"; 
+    Files.write(Paths.get("name.txt"), fileData.getBytes());
+    || writeString
+
+    Path path = Paths.get("name.txt"); 
+    Files.createFile(path);
+    Files.createTempFile
+
+
+22. Как создать директорию?
+    io:
+      File.mkdir()
+      File.mkdirs()
+    nio:
+      Files.createDirectory()
+      Files.createDirectories()
+
+23. Как записать в файл?
+
+    java.io: С использованием любого потока вывода (FileOutputStream, FileWriter).
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("c:/temp/samplefile1.txt"));
+        writer.write(fileContent);
+        writer.close();
+
+        FileWriter fileWriter = new FileWriter("c:/temp/samplefile2.txt");
+        fileWriter.write(fileContent);
+        fileWriter.close();
+
+        FileOutputStream outputStream = new FileOutputStream("c:/temp/samplefile4.txt");
+        byte[] strToBytes = fileContent.getBytes();
+        outputStream.write(strToBytes);   
+        outputStream.close();
+
+        FileOutputStream outputStream = new FileOutputStream("c:/temp/samplefile5.txt");
+        DataOutputStream dataOutStream = new DataOutputStream(new BufferedOutputStream(outputStream));
+        dataOutStream.writeUTF(fileContent);   
+        dataOutStream.close();
+
+    java.nio.file
+        Path path = Paths.get("c:/temp/samplefile7.txt");     
+        Files.write(path, fileContent.getBytes()) -- through OutputStream
+
+    PrintWriter(BufferedWriter(FileWriter()))
+    PrintWriter(BufferedOutputStream(FileOutputStream()))
+
+24. Как прочитать данные из файла?
+    BufferedReader(FileReader())
+    BufferedInputStream(FileInputStream())
+    Scaner()
+    Files.lines()
+
+    BufferedReader br = new BufferedReader(new FileReader(file));       
+    String st; 
+    while ((st = br.readLine()) != null) 
+        System.out.println(st); 
+    }
+
+    FileReader fr = new FileReader("C:\\Users\\pankaj\\Desktop\\test.txt");   
+    int i; 
+    while ((i=fr.read()) != -1) 
+        System.out.print((char) i); 
+
+    Scanner sc = new Scanner(file); 
+    sc.useDelimiter("\\Z");     
+    System.out.println(sc.next());
+
+    data = new String(Files.readAllBytes(Paths.get(fileName)));
+
+
+
+Какие существуют виды потоков ввода вывода
+    Разделяют два вида потоков ввода/вывода: байтовые и символьные.
+Назовите основные предки потоков ввода вывода
+    Байтовые: java.io.InputStream, java.io.OutputStream;
+    Символьные: java.io.Reader, java.io.Writer;
+
+
+Что вы знаете о RandomAccessFile
+    Класс RandomAccessFile наследуется напрямую от Object и не наследуется от вышеприведенных базовых классов ввода\вывода. Предназначен для работы с файлами, поддерживая произвольный доступ к их содержимому.
+    Кроме того, метод seek() позволяет переместиться к определенной позиции и изменить хранящееся там значение.
+    При использовании RandomAccessFile необходимо знать структуру файла. Класс RandomAccessFile содержит методы для чтения и записи примитивов и строк UTF-8.
+
+Какие классы позволяют преобразовать байтовые потоки в символьные и обратно
+    OutputStreamWriter — мост между классом OutputStream и классом Writer. Символы, записанные в поток, преобразовываются в байты.
+    InputStreamReader — аналог для чтения. При помощи методов класса Reader читаются байты из потока InputStream и далее преобразуются в символы.
+
+    OutputStream outputStream = new FileOutputStream("c:\\data\\output.txt");
+    Writer outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
+    outputStreamWriter.write("Hello World");
+    outputStreamWriter.close();
+
+    InputStream inputStream       = new FileInputStream("c:\\data\\input.txt");
+    Reader  inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+    int data = inputStreamReader.read();
+    while(data != -1){
+        char theChar = (char) data;
+        data = inputStreamReader.read();
+    }
+    inputStreamReader.close();
+
+
+
+
+1. READ
+    try (var input = new FileInputStream("even.txt")) {
+        var sb = new StringBuilder();
+        int read;
+        while ((read = input.read()) != -1) {
+            sb.append((char) read);
+        }
+
+    try (BufferReader read = new BufferedReader(new FileReader(this.path))) {
+                read.lines().forEach(out::add); -- stream
+
+    try (var in = new BufferedReader(new FileReader(file))) {
+        for (String line = in.readLine(); line != null; line = in.readLine()) {
+            String[] split = line.split("\\s");
+
+
+    FileInputStream is = new FileInputStream();
+    Reader reader = new InputStreamReader(is, "utf-8");
+    BufferedReader br = new BufferedReader(reader);
+    br.readLine()
+    while line <> null
+
+     try (FileInputStream fis = new FileInputStream(tempFile);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            final Contact contactFromFile = (Contact) ois.readObject();
+            System.out.println(contactFromFile);
+        }
+
+
+2. WRITE
+    try (PrintWriter out = new PrintWriter(
+            new FileOutputStream("src/main/resources/unavailable.csv"))) {
+                out.println("15:01:30;15:02:32");
+
+
+    try (PrintWriter out = new PrintWriter(
+            new BufferedOutputStream(
+                    new FileOutputStream("result.txt")))) {
+
+    List<String> log;
+    try (PrintWriter out = new PrintWriter(
+        new BufferedOutputStream(
+                new FileOutputStream(file)))) {
+        out.write(log.toString());
+        out.write(sb.toString());
+
+    try (BufferedWriter br = new BufferedWriter(
+            new FileWriter(path, Charset.forName("WINDOWS-1251"), true))) {
+        br.write(data + System.lineSeparator());
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    try (FileOutputStream fos = new FileOutputStream(tempFile);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(contact);
+            System.out.println(contact);
+        }
+    }
+
+3. READ + WRITE
+      try (BufferedReader in = new BufferedReader(new FileReader(source));
+             PrintWriter out = new PrintWriter(new BufferedOutputStream(new FileOutputStream(target)))) {
+            in.lines()
+
+
+File tempFile = Files.createTempFile(null, null).toFile();
+
+
+ТЕСТИРИОВАНИЕ ВЫВОДА В КОНСОЛЬ
+public class ExampleTest {
+
+    private ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+    @Before
+    public void setUpStreams() {
+        System.setOut(new PrintStream(output));
+    }
+
+    @Test
+    public void testString() {
+        Example example = new Example();
+        example.doSomeLogic();
+        Assert.assertEquals("Test string", output.toString());
+    }
+
+    @After
+    public void cleanUpStreams() {
+        System.setOut(null);
+    }
+}
+
+
+ТЕСТИРИОВАНИЕ ВВОДА В КОНСОЛЬ
+InputStream sysInBackup = System.in; // backup System.in to restore it later
+ByteArrayInputStream in = new ByteArrayInputStream("My string".getBytes());
+System.setIn(in);
+System.setIn(sysInBackup);
